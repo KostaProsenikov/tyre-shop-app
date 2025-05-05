@@ -31,6 +31,7 @@ public class User {
 
     private String phone;
 
+    @Enumerated(EnumType.STRING)
     private UserRole role;
 
     private boolean isActive;

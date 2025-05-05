@@ -11,21 +11,29 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
 @Table(name = "`order`")
 public class Order {
+
     @Id
     @GeneratedValue
     private UUID id;
 
     private String customerName;
+
     private String customerContact;
+
     private LocalDateTime orderDate = LocalDateTime.now();
 
     @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "order_tires",
+        joinColumns = @JoinColumn(name = "order_id"),
+        inverseJoinColumns = @JoinColumn(name = "tire_id")
+    )
     private List<Tire> tires;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -33,5 +41,9 @@ public class Order {
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
+
+    private LocalDateTime createdOn;
+
+    private LocalDateTime updatedOn;
 }
 
