@@ -1,9 +1,7 @@
 package tireshop.schedule.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import tireshop.user.model.User;
 
 import java.time.LocalDateTime;
@@ -11,6 +9,9 @@ import java.util.UUID;
 
 @Entity
 @Data
+@Builder
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Schedule {
