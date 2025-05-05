@@ -22,19 +22,26 @@ public class ScheduleService {
     }
 
     public Optional<Schedule> checkAndBookSlot(UUID userId, LocalDateTime requestedSlot, UUID orderId) {
-        Optional<Schedule> slotOpt = scheduleRepository.findByAvailableSlotAndIsBookedFalse(requestedSlot);
-
-        if (slotOpt.isPresent()) {
-            Schedule slot = slotOpt.get();
-            slot.setBooked(true);
-            slot.setOrderId(orderId);
-
-            userRepository.findById(userId).ifPresent(slot::setUser);
-            slot.setUpdatedOn(LocalDateTime.now());
-
-            return Optional.of(scheduleRepository.save(slot));
+        if (requestedSlot.isBefore(LocalDateTime.now())) {
+            throw new IllegalArgumentException("Requested time slot must be in the future.");
         }
 
-        return Optional.empty();
+        if (!userRepository.existsById(userId)) {
+            throw new IllegalArgumentException("User with provided ID does not exist.");
+        }
+
+        Optional<Schedule> slotOpt = scheduleRepository.findByAvailableSlotAndIsBookedFalse(requestedSlot);
+
+        if (slotOpt.isEmpty()) {
+            throw new IllegalStateException("Requested time slot is not available.");
+        }
+
+        Schedule slot = slotOpt.get();
+        slot.setBooked(true);
+        slot.setOrderId(orderId);
+        userRepository.findById(userId).ifPresent(slot::setUser);
+        slot.setUpdatedOn(LocalDateTime.now());
+
+        return Optional.of(scheduleRepository.save(slot));
     }
 }
