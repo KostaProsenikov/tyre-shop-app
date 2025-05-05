@@ -1,9 +1,11 @@
-package com.example.tireshop.model;
+package tireshop.order.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import tireshop.tire.model.Tire;
+import tireshop.user.model.User;
 
 import java.time.LocalDateTime;
 import java.util.List;

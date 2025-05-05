@@ -1,6 +1,6 @@
-package com.example.tireshop.repository;
+package tireshop.tracking.repository;
 
-import com.example.tireshop.model.Tracking;
+import tireshop.tracking.model.Tracking;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;

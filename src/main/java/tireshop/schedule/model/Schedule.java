@@ -1,11 +1,10 @@
-package com.example.tireshop.model;
+package tireshop.schedule.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import tireshop.user.model.User;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -14,11 +13,21 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class MountingSchedule {
+public class Schedule {
     @Id
     @GeneratedValue
     private UUID id;
+
     private UUID orderId;
+
     private LocalDateTime availableSlot;
+
     private boolean isBooked;
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private User user;
+
+    private LocalDateTime createdOn;
+
+    private LocalDateTime updatedOn = LocalDateTime.now();
 }
