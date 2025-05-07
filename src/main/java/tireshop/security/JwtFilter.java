@@ -32,6 +32,8 @@ public class JwtFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         String authHeader = request.getHeader("Authorization");
 
+        System.out.println("SecurityContext before: " + SecurityContextHolder.getContext().getAuthentication());
+
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
             try {
@@ -42,6 +44,11 @@ public class JwtFilter extends OncePerRequestFilter {
                 List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(role));
                 UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(username, null, authorities);
                 SecurityContextHolder.getContext().setAuthentication(auth);
+
+//                System.out.println("Authorization header: " + authHeader);
+//                System.out.println("Extracted username: " + username);
+//                System.out.println("Authentication set: " + SecurityContextHolder.getContext().getAuthentication());
+
             } catch (JwtException | IllegalArgumentException e) {
                 response.setStatus(HttpStatus.UNAUTHORIZED.value());
                 response.getWriter().write("Invalid or expired token");

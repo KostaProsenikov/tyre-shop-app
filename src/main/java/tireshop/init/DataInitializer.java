@@ -5,6 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import tireshop.order.model.Order;
+import tireshop.order.model.OrderStatus;
+import tireshop.order.repository.OrderRepository;
 import tireshop.tire.model.Tire;
 import tireshop.tire.model.TireBrand;
 import tireshop.tire.repository.TireRepository;
@@ -21,11 +24,13 @@ public class DataInitializer {
 
     private final UserRepository userRepository;
     private final TireRepository tireRepository;
+    private final OrderRepository orderRepository;
 
     @Autowired
-    public DataInitializer(UserRepository userRepository, TireRepository tireRepository) {
+    public DataInitializer(UserRepository userRepository, TireRepository tireRepository, OrderRepository orderRepository) {
         this.userRepository = userRepository;
         this.tireRepository = tireRepository;
+        this.orderRepository = orderRepository;
     }
 
     @PostConstruct
@@ -87,6 +92,29 @@ public class DataInitializer {
                         new Tire(null, TireBrand.BRIDGESTONE, "Turanza T005", "195/65R15", new BigDecimal("85.5"), 120, 195, 65, 15, LocalDateTime.now(), LocalDateTime.now()),
                         new Tire(null, TireBrand.CONTINENTAL, "PremiumContact 6", "225/45R17", new BigDecimal("110.0"), 80, 225, 45, 17, LocalDateTime.now(), LocalDateTime.now())
                 ));
+            }
+            List<User> users = userRepository.findAll();
+            List<Tire> tires = tireRepository.findAll();
+            if (!users.isEmpty() && !tires.isEmpty()) {
+                Order order1 = Order.builder()
+                        .user(users.get(0))
+                        .tires(List.of(tires.get(0), tires.get(1)))
+                        .orderDate(LocalDateTime.now())
+                        .status(OrderStatus.PENDING)
+                        .createdOn(LocalDateTime.now())
+                        .updatedOn(LocalDateTime.now())
+                        .build();
+
+                Order order2 = Order.builder()
+                        .user(users.get(1))
+                        .tires(List.of(tires.get(2)))
+                        .orderDate(LocalDateTime.now())
+                        .status(OrderStatus.CONFIRMED)
+                        .createdOn(LocalDateTime.now())
+                        .updatedOn(LocalDateTime.now())
+                        .build();
+
+                orderRepository.saveAll(List.of(order1, order2));
             }
         } catch (Exception e) {
             e.printStackTrace();

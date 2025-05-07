@@ -10,12 +10,18 @@ import tireshop.user.model.User;
 import java.security.Key;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Base64;
 import java.util.Date;
 
 @Component
 public class JwtUtil {
 
     private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+
+    public JwtUtil() {
+        // Log the key in Base64 format
+        System.out.println("HS256 Key: " + Base64.getEncoder().encodeToString(key.getEncoded()));
+    }
 
     public String generateToken(User user) {
         return Jwts.builder()

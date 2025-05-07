@@ -13,7 +13,6 @@ import java.util.UUID;
 public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
-
     private final UserRepository userRepository;
 
     public ScheduleService(ScheduleRepository scheduleRepository, UserRepository userRepository) {
