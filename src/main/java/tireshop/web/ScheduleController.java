@@ -3,10 +3,7 @@ package tireshop.web;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import tireshop.schedule.model.Schedule;
 import tireshop.schedule.service.ScheduleService;
 import java.security.Principal;
@@ -14,6 +11,7 @@ import tireshop.user.model.User;
 import tireshop.user.service.CustomUserDetailsService;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -45,5 +43,11 @@ public class ScheduleController {
         return (ResponseEntity<Object>) result.<ResponseEntity<?>>map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.CONFLICT)
                         .body("Requested time slot is not available."));
+    }
+
+    @GetMapping("/available-slots")
+    public ResponseEntity<List<Schedule>> getAvailableSlots() {
+        List<Schedule> slots = scheduleService.getFirst10AvailableSlots();
+        return ResponseEntity.ok(slots);
     }
 }

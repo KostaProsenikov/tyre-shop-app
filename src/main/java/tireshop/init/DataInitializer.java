@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 import tireshop.order.model.Order;
 import tireshop.order.model.OrderStatus;
 import tireshop.order.repository.OrderRepository;
+import tireshop.schedule.model.Schedule;
+import tireshop.schedule.repository.ScheduleRepository;
 import tireshop.tire.model.Tire;
 import tireshop.tire.model.TireBrand;
 import tireshop.tire.repository.TireRepository;
@@ -25,12 +27,14 @@ public class DataInitializer {
     private final UserRepository userRepository;
     private final TireRepository tireRepository;
     private final OrderRepository orderRepository;
+    private final ScheduleRepository scheduleRepository;
 
     @Autowired
-    public DataInitializer(UserRepository userRepository, TireRepository tireRepository, OrderRepository orderRepository) {
+    public DataInitializer(UserRepository userRepository, TireRepository tireRepository, OrderRepository orderRepository, ScheduleRepository scheduleRepository) {
         this.userRepository = userRepository;
         this.tireRepository = tireRepository;
         this.orderRepository = orderRepository;
+        this.scheduleRepository = scheduleRepository;
     }
 
     @PostConstruct
@@ -115,6 +119,20 @@ public class DataInitializer {
                         .build();
 
                 orderRepository.saveAll(List.of(order1, order2));
+            }
+            // Add 5 schedule slots for the next day between 10:00 and 16:00
+            LocalDateTime tomorrow = LocalDateTime.now().plusDays(1).withHour(10).withMinute(0).withSecond(0).withNano(0);
+            for (int i = 0; i < 5; i++) {
+                LocalDateTime slotTime = tomorrow.plusHours(i);
+                if (scheduleRepository.findByAvailableSlotAndIsBookedFalse(slotTime).isEmpty()) {
+                    Schedule schedule = Schedule.builder()
+                            .availableSlot(slotTime)
+                            .isBooked(false)
+                            .createdOn(LocalDateTime.now())
+                            .updatedOn(LocalDateTime.now())
+                            .build();
+                    scheduleRepository.save(schedule);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

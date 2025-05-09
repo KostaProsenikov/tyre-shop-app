@@ -6,6 +6,7 @@ import tireshop.schedule.repository.ScheduleRepository;
 import tireshop.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -43,4 +44,9 @@ public class ScheduleService {
 
         return Optional.of(scheduleRepository.save(slot));
     }
+
+    public List<Schedule> getFirst10AvailableSlots() {
+        return scheduleRepository.findTop10ByIsBookedFalseOrderByAvailableSlotAsc();
+    }
+
 }
