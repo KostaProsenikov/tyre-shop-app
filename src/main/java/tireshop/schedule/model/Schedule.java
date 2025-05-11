@@ -25,7 +25,7 @@ public class Schedule {
 
     private boolean isBooked;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne()
     private User user;
 
     private LocalDateTime createdOn;
